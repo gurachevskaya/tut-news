@@ -13,8 +13,8 @@ class CustomSegmentedControl: UIView {
     private var buttonTitles: [String]!
     private var buttons: [UIButton]!
     
-    var textColor: UIColor = .secondaryLabel
-    var selectedTextColor: UIColor = .label
+    var textColor: UIColor          = .secondaryLabel
+    var selectedTextColor: UIColor  = .label
     
     var font: UIFont = UIFont.systemFont(ofSize: 16, weight: .regular)
     var selectedFont = UIFont.systemFont(ofSize: 16, weight: .bold)
@@ -29,7 +29,7 @@ class CustomSegmentedControl: UIView {
         self.init(frame: frame)
         self.buttonTitles = buttonTitles
         createButtons()
-        configureStackView()
+        configure()
     }
     
     
@@ -55,12 +55,14 @@ class CustomSegmentedControl: UIView {
     }
 
     
-    private func configureStackView() {
+    private func configure() {
+        translatesAutoresizingMaskIntoConstraints = false
+        
         let stack = UIStackView(arrangedSubviews: buttons)
         
-        stack.axis = .horizontal
-        stack.alignment = .fill
-        stack.distribution = .fillEqually
+        stack.axis          = .horizontal
+        stack.alignment     = .fill
+        stack.distribution  = .fillEqually
         
         addSubview(stack)
         stack.translatesAutoresizingMaskIntoConstraints = false

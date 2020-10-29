@@ -6,4 +6,10 @@
 //  Copyright © 2020 Karina. All rights reserved.
 //
 
-import Foundation
+import UIKit
+
+enum Images {
+    static let ghlogo                   = UIImage(named: "gh-logo")
+    static let placeholder              = UIImage(named: "avatar-placeholder")
+    static let emptyStateLogo           = UIImage(named: "empty-state-logo")
+}
