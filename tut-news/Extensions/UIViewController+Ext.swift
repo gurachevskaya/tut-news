@@ -6,4 +6,21 @@
 //  Copyright © 2020 Karina. All rights reserved.
 //
 
-import Foundation
+import UIKit
+
+extension UIViewController {
+    
+    func presentAlertOnMainThread(title: String, message: String, buttonTitle: String) {
+        DispatchQueue.main.async {
+            let alertVC = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            
+            let okAction = UIAlertAction(title: buttonTitle, style: UIAlertAction.Style.default)
+            alertVC.addAction(okAction)
+            
+            alertVC.modalPresentationStyle  = .overFullScreen
+            alertVC.modalTransitionStyle    = .crossDissolve
+            self.present(alertVC, animated: true)
+        }
+    }
+}
+

@@ -6,4 +6,11 @@
 //  Copyright © 2020 Karina. All rights reserved.
 //
 
-import Foundation
+import UIKit
+
+extension UICollectionView {
+    
+    func reloadDataOnMainThread() {
+        DispatchQueue.main.async { self.reloadData() }
+    }
+}
