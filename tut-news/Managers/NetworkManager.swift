@@ -18,7 +18,6 @@ class NetworkManager: NSObject {
     
     private override init() {}
     
-    
     func getNews(completed: @escaping (Result<[News], AppError>) -> Void) {
         
         guard let url = URL(string: baseUrl) else { return }

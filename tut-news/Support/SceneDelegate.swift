@@ -18,16 +18,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window                      = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene         = windowScene
-        window?.rootViewController  =  FeedVC()
+        window?.rootViewController  = FeedVC()
         window?.makeKeyAndVisible()
-        
-        
-        configureNavigationBar()
-    }
-    
-    
-    func configureNavigationBar() {
-        UINavigationBar.appearance().tintColor = .systemGreen
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -58,7 +50,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
 
         // Save changes in the application's managed object context when the application transitions to the background.
-        (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
     }
 
 

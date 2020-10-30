@@ -8,14 +8,16 @@
 
 import UIKit
 
-protocol CustomSegmentedControlDelegate {
+enum ControlStates { case all, saved }
+
+protocol CustomSegmentedControlDelegate: class {
     func showAllNews()
     func showFavouritesNews()
 }
 
 class CustomSegmentedControl: UIView {
     
-    var delegate: CustomSegmentedControlDelegate?
+    weak var delegate: CustomSegmentedControlDelegate?
     
     private var buttonTypes: [TabItem]!
     var buttons: [UIButton]!
@@ -25,6 +27,8 @@ class CustomSegmentedControl: UIView {
     
     var font: UIFont = UIFont.systemFont(ofSize: 16, weight: .regular)
     var selectedFont = UIFont.systemFont(ofSize: 16, weight: .bold)
+    
+    var state: ControlStates!
     
     
     override init(frame: CGRect) {
@@ -48,17 +52,17 @@ class CustomSegmentedControl: UIView {
     private func createButtons() {
         buttons = [UIButton]()
         
-        for (index, buttonType) in buttonTypes.enumerated() {
+        for buttonType in buttonTypes {
             let button = UIButton(type: .system)
             button.setTitle(buttonType.rawValue, for: .normal)
             button.setTitleColor(textColor, for: .normal)
-            button.tag = index
             
             button.addTarget(self, action: #selector(CustomSegmentedControl.buttonAction(sender:)), for: .touchUpInside)
             buttons.append(button)
             
             buttons[0].setTitleColor(selectedTextColor, for: .normal)
             buttons[0].titleLabel?.font = selectedFont
+            state = .all
         }
     }
 
@@ -79,11 +83,13 @@ class CustomSegmentedControl: UIView {
     
     
     @objc func buttonAction(sender: UIButton) {
-        
-        if sender.tag == 0 {
+        if sender.titleLabel?.text == TabItem.all.rawValue {
             delegate?.showAllNews()
-        } else if sender.tag == 1 {
+            state = .all
+            
+        } else if sender.titleLabel?.text == TabItem.saved.rawValue {
             delegate?.showFavouritesNews()
+            state = .saved
         }
         
         for button in buttons {

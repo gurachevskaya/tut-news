@@ -1,5 +1,5 @@
 //
-//  ControllerStates.swift
+//  TabItem.swift
 //  tut-news
 //
 //  Created by Karina on 10/30/20.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-enum ControllerStates: String {
+enum TabItem: String {
     case all = "All"
     case saved = "Saved"
 }

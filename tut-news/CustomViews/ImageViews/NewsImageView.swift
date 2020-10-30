@@ -9,6 +9,7 @@
 import UIKit
 
 class NewsImageView: UIImageView {
+    
     let cache = NetworkManager.shared.cache
     let placeholderImage = Images.placeholder
     
@@ -31,9 +32,20 @@ class NewsImageView: UIImageView {
     
     
     private func configure() {
-        clipsToBounds       = true
-        contentMode         = .scaleAspectFill
-        image               = placeholderImage
+        clipsToBounds               = true
+        contentMode                 = .scaleAspectFill
+        image                       = placeholderImage
+        isUserInteractionEnabled    = true
         translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    
+    func downloadImage(fromURL url: String) {
+        image = Images.placeholder
+        NetworkManager.shared.downloadImage(from: url) { [weak self] image in
+            guard let self = self else { return }
+            guard let image = image else { return }
+            DispatchQueue.main.async { self.image = image }
+        }
     }
 }

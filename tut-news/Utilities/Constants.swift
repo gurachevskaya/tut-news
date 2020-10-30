@@ -10,14 +10,13 @@ import UIKit
 
 enum SFSymbols {
     static let save                     = UIImage(systemName: "bookmark")
+    static let saveFilled               = UIImage(systemName: "bookmark.fill")
     static let share                    = UIImage(systemName:"square.and.arrow.up")
 }
 
 
 enum Images {
-    static let ghlogo                   = UIImage(named: "gh-logo")
-    static let placeholder              = UIImage(named: "avatar-placeholder")
-    static let emptyStateLogo           = UIImage(named: "empty-state-logo")
+    static let placeholder              = UIImage(named: "placeholder")
 }
 
 

@@ -21,13 +21,13 @@ class NewsInfoViewController: UIViewController {
     
     let shareButton         = UIButton()
     let saveButton          = UIButton()
-    var buttons: [UIButton] = []
+    var buttons             = [UIButton]()
     
     var news: News!
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         configureViewController()
         configureScrollView()
         configureButtons()
@@ -41,14 +41,14 @@ class NewsInfoViewController: UIViewController {
     }
     
     
-    func configureViewController() {
+    private func configureViewController() {
         view.backgroundColor = Colors.primary
         let doneButton = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(dismissVC))
         navigationItem.rightBarButtonItem = doneButton
     }
     
     
-    func configureScrollView() {
+    private func configureScrollView() {
         view.addSubviews(scrollView)
         scrollView.addSubviews(contentView)
         
@@ -62,7 +62,7 @@ class NewsInfoViewController: UIViewController {
     }
     
     
-    func configureButtons() {
+    private func configureButtons() {
         buttons = [saveButton, shareButton]
         
         for button in buttons {
@@ -74,33 +74,73 @@ class NewsInfoViewController: UIViewController {
         saveButton.setImage(SFSymbols.save, for: .normal)
         shareButton.setImage(SFSymbols.share, for: .normal)
         
+        if PersistenseManager.isInFavs(news: news) {
+            saveButton.setImage(SFSymbols.saveFilled, for: .normal)
+        }
+
         saveButton.addTarget(self, action: #selector(didTapSaveButton), for: .touchUpInside)
         shareButton.addTarget(self, action: #selector(didTapShareButton), for: .touchUpInside)
     }
 
     
     @objc func didTapSaveButton() {
-         print("didTapSaveButton")
+        if PersistenseManager.isInFavs(news: news) {
+            removeFromFavourites(news)
+            saveButton.setImage(SFSymbols.save, for: .normal)
+        } else {
+            addToFavourites(news)
+            saveButton.setImage(SFSymbols.saveFilled, for: .normal)
+        }
     }
     
     
     @objc func didTapShareButton() {
-           print("didTapShareButton")
-       }
+        guard let url = URL(string: news.link) else { return }
+        
+        let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: [])
+        activityViewController.popoverPresentationController?.sourceView = self.shareButton
+        activityViewController.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection.down
+        present(activityViewController, animated: true, completion: nil)
+    }
+    
+    
+    private func addToFavourites(_ news: News) {
+        let favourite = news
+        
+        PersistenseManager.updateWith(favourite: favourite, actionType: .add) { [weak self] error in
+            guard let self = self else { return }
+            
+            guard let error = error else {
+                self.presentAlertOnMainThread(title: "Success", message: "You have successfully favourited this news 🥳", buttonTitle: "Hooray!")
+                return
+            }
+            
+            self.presentAlertOnMainThread(title: "Something went wrong", message: error.rawValue, buttonTitle: "Ok")
+        }
+    }
+    
+    
+    private func removeFromFavourites(_ news: News) {
+        PersistenseManager.updateWith(favourite: news, actionType: .remove) { [weak self] error in
+            guard let self = self else { return }
+            guard let error = error else { return }
+            self.presentAlertOnMainThread(title: "Unable to remove", message: error.rawValue, buttonTitle: "Ok")
+        }
+    }
        
     
-    func set(news: News) {
-           newsImageView.downloadImage(fromURL: news.newsUrl)
-           newsImageView.contentMode = .scaleAspectFill
-           authorLabel.text        = news.author
-           dateLabel.text          = news.pubDate.convertToDisplayFormat()
-           titleLabel.text         = news.title
-           descriptionLabel.text   = news.description
-           descriptionLabel.addInterlineSpacing()
-       }
+    private func set(news: News) {
+        newsImageView.downloadImage(fromURL: news.newsUrl)
+        newsImageView.contentMode    = .scaleAspectFill
+        authorLabel.text             = news.author
+        dateLabel.text               = news.pubDate.convertToDisplayFormat()
+        titleLabel.text              = news.title
+        descriptionLabel.text        = news.description
+        descriptionLabel.addInterlineSpacing()
+    }
     
     
-    func configureUIElements() {
+    private func configureUIElements() {
         contentView.addSubviews(newsImageView, authorLabel, dateLabel, titleLabel, descriptionLabel)
         let padding: CGFloat = 8
         
@@ -119,7 +159,7 @@ class NewsInfoViewController: UIViewController {
             
             shareButton.trailingAnchor.constraint(equalTo: newsImageView.trailingAnchor, constant: -padding),
             shareButton.bottomAnchor.constraint(equalTo: newsImageView.bottomAnchor, constant: -padding),
-            shareButton.heightAnchor.constraint(equalToConstant: 50),
+            shareButton.widthAnchor.constraint(equalToConstant: 50),
             shareButton.heightAnchor.constraint(equalToConstant: 50),
             
             saveButton.trailingAnchor.constraint(equalTo: shareButton.leadingAnchor, constant: -padding),
@@ -152,6 +192,4 @@ class NewsInfoViewController: UIViewController {
     @objc func dismissVC() {
         dismiss(animated: true)
     }
-    
-    
 }
