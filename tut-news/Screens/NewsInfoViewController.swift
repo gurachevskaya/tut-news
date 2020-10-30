@@ -82,6 +82,7 @@ class NewsInfoViewController: UIViewController {
         
         if PersistenseManager.isInFavs(news: news) {
             saveButton.setImage(SFSymbols.saveFilled, for: .normal)
+            saveButton.tintColor = .systemYellow
         }
 
         saveButton.addTarget(self, action: #selector(didTapSaveButton), for: .touchUpInside)
@@ -94,9 +95,11 @@ class NewsInfoViewController: UIViewController {
             removeFromFavourites(news)
             delegate?.reloadView()
             saveButton.setImage(SFSymbols.save, for: .normal)
+            saveButton.tintColor = .white
         } else {
             addToFavourites(news)
             saveButton.setImage(SFSymbols.saveFilled, for: .normal)
+            saveButton.tintColor = .systemYellow
         }
     }
     
