@@ -7,23 +7,31 @@
 //
 
 import UIKit
+import CoreLocation
 
-class FeedVC: UIViewController {
+class FeedVC: DataLoadingVC {
     
     let control = CustomSegmentedControl(frame: .zero, buttonTypes: [.all, .saved])
     var collectionView: UICollectionView!
-    var news: [News] = []
+    var news: [News]    = []
+    
+    var locationManager: CLLocationManager?
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Colors.primary
-        
-//        presentAlertOnMainThread(title: "error", message: "here a message", buttonTitle: "Ok")
-        
+        configureLocationManager()
         configureControl()
         configureCollectionView()
         getNews()
+    }
+    
+    
+    private func configureLocationManager() {
+        locationManager = CLLocationManager()
+        locationManager?.delegate = self
+        locationManager?.requestAlwaysAuthorization()
     }
     
     
@@ -57,14 +65,16 @@ class FeedVC: UIViewController {
     }
     
     
-    func getNews() {
+    private func getNews() {
         NetworkManager.shared.getNews { [weak self] result in
             guard let self = self else { return }
             
             switch result {
             case .success(let news):
-                self.news = news
-                self.collectionView.reloadDataOnMainThread()
+                if self.news != news {
+                    self.news = news
+                    self.collectionView.reloadDataOnMainThread()
+                }
             case .failure(let error):
                 self.presentAlertOnMainThread(title: "Something went wrong", message: error.rawValue, buttonTitle: "Ok")
             }
@@ -72,10 +82,31 @@ class FeedVC: UIViewController {
     }
     
     
-    func getFavNews() {
-
-        self.news = []
+    private func getFavNews() {
+        PersistenseManager.retrieveFavourites { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let favourites):
+                self.news = favourites
+                self.collectionView.reloadDataOnMainThread()
+//                self.updateUI(with: favourites)
+                
+            case .failure(let error):
+                self.presentAlertOnMainThread(title: "Something went wrong", message: error.rawValue, buttonTitle: "Ok")
+            }
+        }
     }
+
+//    private func updateUI(with favourites: [News]) {
+//        self.news = favourites
+//        DispatchQueue.main.async {
+//            self.collectionView.reloadData()
+//            self.view.bringSubviewToFront(self.collectionView)
+//        }
+//        if favourites.isEmpty {
+//            showEmptyStateView(with: "No favourites\nChoose one on the all screen.", in: collectionView)
+//        }
+//    }
 }
 
 
@@ -88,31 +119,30 @@ extension FeedVC: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NewsCell.reuseID, for: indexPath) as! NewsCell
-        cell.set(news: news[indexPath.item])
+        let currentNews = news[indexPath.item]
+        cell.set(news: currentNews)
+        
         return cell
     }
 }
 
 extension FeedVC: UICollectionViewDelegate {
     
-    //    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-    //        let offsetY       = scrollView.contentOffset.y
-    //        let contentHeight = scrollView.contentSize.height
-    //        let height        = scrollView.frame.size.height
-    //
-    //        if offsetY > contentHeight - height {
-    //            guard hasMoreFollowers, !isLoadingMoreFollowers else { return }
-    //            page += 1
-    //            getFollowers(username: username, page: page)
-    //        }
-    //    }
-    //
-    //
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offset                  = scrollView.contentOffset
+        let inset                   = scrollView.contentInset
+        let y: CGFloat              = offset.x - inset.left
+        let reloadDistance: CGFloat = -75
+        if y < reloadDistance && control.state == .all {
+            getNews()
+        }
+    }
+    
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let currentNews        = news[indexPath.item]
-        
+        let currentNews = news[indexPath.item]
         let destVC      = NewsInfoViewController()
-        destVC.news = currentNews
+        destVC.news     = currentNews
         let navVC       = UINavigationController(rootViewController: destVC)
         present(navVC, animated: true)
     }
@@ -123,12 +153,26 @@ extension FeedVC: CustomSegmentedControlDelegate {
     
     func showAllNews() {
         getNews()
-        collectionView.reloadDataOnMainThread()
     }
     
     
     func showFavouritesNews() {
         getFavNews()
-        collectionView.reloadDataOnMainThread()
+    }
+}
+
+
+extension FeedVC: CLLocationManagerDelegate {
+    
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == .authorizedAlways {
+            if CLLocationManager.isMonitoringAvailable(for: CLBeaconRegion.self) {
+                if CLLocationManager.isRangingAvailable() {
+                    // do stuff
+                }
+            }
+        } else if status == .denied || status == .restricted {
+            presentLocationAlertOnMainThread()
+        }
     }
 }

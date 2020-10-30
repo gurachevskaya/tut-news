@@ -22,5 +22,19 @@ extension UIViewController {
             self.present(alertVC, animated: true)
         }
     }
+    
+    
+    func presentLocationAlertOnMainThread() {
+        DispatchQueue.main.async {
+            let alertVC = UIAlertController(title: "😢", message: "We need to know your location. Go to Settings > Privacy > Location Services and change privacy settings for this app.", preferredStyle: .alert)
+            
+            let okAction = UIAlertAction(title: "Ok", style: UIAlertAction.Style.default)
+            alertVC.addAction(okAction)
+            
+            alertVC.modalPresentationStyle  = .overFullScreen
+            alertVC.modalTransitionStyle    = .crossDissolve
+            self.present(alertVC, animated: true)
+        }
+    }
 }
 
