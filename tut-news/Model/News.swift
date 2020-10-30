@@ -21,7 +21,8 @@ struct News: Codable {
     init(with dictionary: [String: Any]) {
         self.title       = dictionary["title"] as? String ?? ""
         self.link        = dictionary["link"] as? String ?? ""
-        self.description = dictionary["description"] as? String ?? ""
+        let currDescription = dictionary["description"] as? String ?? ""
+        self.description = currDescription.slice(from: ">", to: "<") ?? currDescription
         self.author      = dictionary["atom:name"] as? String ?? ""
         self.pubDate     = dictionary["pubDate"] as? String ?? ""
         self.newsUrl     = dictionary["newsUrl"] as? String ?? ""
