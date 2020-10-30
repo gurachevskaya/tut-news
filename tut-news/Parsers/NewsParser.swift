@@ -8,12 +8,12 @@
 
 import Foundation
 
-class NewsLParser: NSObject, XMLParserDelegate {
+class NewsLParser: NSObject {
     
     let recordKey = "item"
     let dictionaryKeys = Set(["title", "link", "description", "atom:name", "pubDate"])
-
-    private var news: [News]?
+    
+    private var news: [News] = []
     var currentDictionary: [String: Any]?
     var currentValue: String?
     
@@ -26,15 +26,18 @@ class NewsLParser: NSObject, XMLParserDelegate {
         parser.delegate = self
         parser.parse()
     }
-    
+}
 
+
+extension NewsLParser: XMLParserDelegate {
+    
     func parserDidStartDocument(_ parser: XMLParser) {
         news = []
     }
-
-
-    func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
     
+    
+    func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
+        
         if elementName == recordKey {
             currentDictionary = [:]
         }
@@ -43,29 +46,31 @@ class NewsLParser: NSObject, XMLParserDelegate {
         
         if dictionaryKeys.contains(elementName) {
             currentValue = ""
-        } else if elementName == "enclosure" {
+        }   else if elementName == "enclosure" {
             currentValue = attributeDict["url"]
         }
-        
     }
-
-
+    
+    
     func parser(_ parser: XMLParser, foundCharacters string: String) {
         currentValue? += string
     }
-
-
+    
+    
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         
         if elementName == recordKey {
-            let a = News(with: currentDictionary)
-            news!.append(a!)
+            let currentNews = News(with: currentDictionary ?? [:])
+            news.append(currentNews)
             currentDictionary = nil
         }
         
         guard currentDictionary != nil else { return }
         
-        if dictionaryKeys.contains(elementName) && currentDictionary![elementName] == nil {
+        if dictionaryKeys.contains(elementName) {
+            if elementName == "atom:name" {
+                guard currentValue!.contains("TUT") else { return }
+            }
             currentDictionary![elementName] = currentValue
             currentValue = nil
         }
@@ -79,16 +84,15 @@ class NewsLParser: NSObject, XMLParserDelegate {
     
     func parserDidEndDocument(_ parser: XMLParser) {
         guard let completion = completion else { return }
-        completion(.success(news!))
+        completion(.success(news))
         resetParserState()
     }
-
-
+    
+    
     func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) {
         guard let completion = completion else { return }
-        //edit
         completion(.failure(.invalidData))
-       resetParserState()
+        resetParserState()
     }
     
     
@@ -96,6 +100,5 @@ class NewsLParser: NSObject, XMLParserDelegate {
         completion          = nil
         currentValue        = nil
         currentDictionary   = nil
-        news                = nil
     }
 }
