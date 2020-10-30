@@ -10,7 +10,7 @@ import UIKit
 
 class FeedVC: UIViewController {
     
-    let control = CustomSegmentedControl(frame: .zero, buttonTitles: ["All", "Saved"])
+    let control = CustomSegmentedControl(frame: .zero, buttonTypes: [.all, .saved])
     var collectionView: UICollectionView!
     var news: [News] = []
     
@@ -19,7 +19,7 @@ class FeedVC: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = Colors.primary
         
-        presentAlertOnMainThread(title: "error", message: "here a message", buttonTitle: "Ok")
+//        presentAlertOnMainThread(title: "error", message: "here a message", buttonTitle: "Ok")
         
         configureControl()
         configureCollectionView()
@@ -29,9 +29,9 @@ class FeedVC: UIViewController {
     
     private func configureControl() {
         view.addSubview(control)
-        
+        control.delegate = self
         NSLayoutConstraint.activate([
-            control.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
+            control.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             control.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             control.heightAnchor.constraint(equalToConstant: 44),
             control.widthAnchor.constraint(equalToConstant: 250)
@@ -69,6 +69,12 @@ class FeedVC: UIViewController {
                 self.presentAlertOnMainThread(title: "Something went wrong", message: error.rawValue, buttonTitle: "Ok")
             }
         }
+    }
+    
+    
+    func getFavNews() {
+
+        self.news = []
     }
 }
 
@@ -109,5 +115,20 @@ extension FeedVC: UICollectionViewDelegate {
         destVC.news = currentNews
         let navVC       = UINavigationController(rootViewController: destVC)
         present(navVC, animated: true)
+    }
+}
+
+
+extension FeedVC: CustomSegmentedControlDelegate {
+    
+    func showAllNews() {
+        getNews()
+        collectionView.reloadDataOnMainThread()
+    }
+    
+    
+    func showFavouritesNews() {
+        getFavNews()
+        collectionView.reloadDataOnMainThread()
     }
 }

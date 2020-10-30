@@ -8,10 +8,17 @@
 
 import UIKit
 
+protocol CustomSegmentedControlDelegate {
+    func showAllNews()
+    func showFavouritesNews()
+}
+
 class CustomSegmentedControl: UIView {
     
-    private var buttonTitles: [String]!
-    private var buttons: [UIButton]!
+    var delegate: CustomSegmentedControlDelegate?
+    
+    private var buttonTypes: [TabItem]!
+    var buttons: [UIButton]!
     
     var textColor: UIColor          = .systemGray2
     var selectedTextColor: UIColor  = .white
@@ -25,9 +32,9 @@ class CustomSegmentedControl: UIView {
     }
     
     
-    convenience init(frame: CGRect, buttonTitles: [String]) {
+    convenience init(frame: CGRect, buttonTypes: [TabItem]) {
         self.init(frame: frame)
-        self.buttonTitles = buttonTitles
+        self.buttonTypes = buttonTypes
         createButtons()
         configure()
     }
@@ -41,10 +48,11 @@ class CustomSegmentedControl: UIView {
     private func createButtons() {
         buttons = [UIButton]()
         
-        for buttonTitle in buttonTitles {
+        for (index, buttonType) in buttonTypes.enumerated() {
             let button = UIButton(type: .system)
-            button.setTitle(buttonTitle, for: .normal)
+            button.setTitle(buttonType.rawValue, for: .normal)
             button.setTitleColor(textColor, for: .normal)
+            button.tag = index
             
             button.addTarget(self, action: #selector(CustomSegmentedControl.buttonAction(sender:)), for: .touchUpInside)
             buttons.append(button)
@@ -71,6 +79,13 @@ class CustomSegmentedControl: UIView {
     
     
     @objc func buttonAction(sender: UIButton) {
+        
+        if sender.tag == 0 {
+            delegate?.showAllNews()
+        } else if sender.tag == 1 {
+            delegate?.showFavouritesNews()
+        }
+        
         for button in buttons {
             button.setTitleColor(textColor, for: .normal)
             button.titleLabel?.font = font

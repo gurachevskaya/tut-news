@@ -8,22 +8,7 @@
 
 import UIKit
 
-enum TabItem: String, CaseIterable {
+enum TabItem: String {
     case all = "All"
     case saved = "Saved"
-    
-    
-    var viewController: UIViewController {
-        switch self {
-        case .all:
-            return FeedVC()
-        case .saved:
-            return FavoritesViewController()
-        }
-    }
-    
-    
-    var displayTitle: String {
-        return self.rawValue.capitalized(with: nil)
-    }
 }
