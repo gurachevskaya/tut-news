@@ -142,6 +142,7 @@ extension FeedVC: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let currentNews = news[indexPath.item]
         let destVC      = NewsInfoViewController()
+        destVC.delegate = self
         destVC.news     = currentNews
         let navVC       = UINavigationController(rootViewController: destVC)
         present(navVC, animated: true)
@@ -157,6 +158,13 @@ extension FeedVC: CustomSegmentedControlDelegate {
     
     
     func showFavouritesNews() {
+        getFavNews()
+    }
+}
+
+
+extension FeedVC: NewsInfoViewControllerDelegate {
+    func reloadView() {
         getFavNews()
     }
 }

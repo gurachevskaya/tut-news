@@ -186,12 +186,12 @@
 			children = (
 				9A57EC4C254B60E800DCE3EF /* Extensions */,
 				9A2509C4254B19690006ED97 /* Parsers */,
+				9A2509BB254B16A00006ED97 /* Managers */,
 				9A2509C1254B17E30006ED97 /* Model */,
 				9A2509BE254B17170006ED97 /* Utilities */,
-				9A2509BB254B16A00006ED97 /* Managers */,
-				9A9380C6254AE75000A6459D /* Support */,
 				9A9380C4254AE74400A6459D /* Screens */,
 				9A9380CB254AEC0200A6459D /* CustomViews */,
+				9A9380C6254AE75000A6459D /* Support */,
 				9A9380B0254AE65000A6459D /* Info.plist */,
 			);
 			path = "tut-news";

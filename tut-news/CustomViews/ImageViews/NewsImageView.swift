@@ -27,7 +27,7 @@ class NewsImageView: UIImageView {
     
     convenience init(radius: CGFloat, frame: CGRect) {
         self.init(frame: .zero)
-        self.layer.cornerRadius = radius
+        layer.cornerRadius = radius
     }
     
     

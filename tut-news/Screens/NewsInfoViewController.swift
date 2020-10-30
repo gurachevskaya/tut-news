@@ -8,7 +8,13 @@
 
 import UIKit
 
+protocol NewsInfoViewControllerDelegate: class {
+    func reloadView()
+}
+
 class NewsInfoViewController: UIViewController {
+    
+    weak var delegate: NewsInfoViewControllerDelegate?
     
     let scrollView          = UIScrollView()
     let contentView         = UIView()
@@ -86,6 +92,7 @@ class NewsInfoViewController: UIViewController {
     @objc func didTapSaveButton() {
         if PersistenseManager.isInFavs(news: news) {
             removeFromFavourites(news)
+            delegate?.reloadView()
             saveButton.setImage(SFSymbols.save, for: .normal)
         } else {
             addToFavourites(news)
@@ -98,7 +105,7 @@ class NewsInfoViewController: UIViewController {
         guard let url = URL(string: news.link) else { return }
         
         let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: [])
-        activityViewController.popoverPresentationController?.sourceView = self.shareButton
+        activityViewController.popoverPresentationController?.sourceView = shareButton
         activityViewController.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection.down
         present(activityViewController, animated: true, completion: nil)
     }
