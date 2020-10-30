@@ -13,8 +13,8 @@ class CustomSegmentedControl: UIView {
     private var buttonTitles: [String]!
     private var buttons: [UIButton]!
     
-    var textColor: UIColor          = .secondaryLabel
-    var selectedTextColor: UIColor  = .label
+    var textColor: UIColor          = .systemGray2
+    var selectedTextColor: UIColor  = .white
     
     var font: UIFont = UIFont.systemFont(ofSize: 16, weight: .regular)
     var selectedFont = UIFont.systemFont(ofSize: 16, weight: .bold)
@@ -66,13 +66,7 @@ class CustomSegmentedControl: UIView {
         
         addSubview(stack)
         stack.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            stack.topAnchor.constraint(equalTo: self.topAnchor),
-            stack.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            stack.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            stack.bottomAnchor.constraint(equalTo: self.bottomAnchor)
-        ])
+        stack.pinToEdges(of: self)
     }
     
     

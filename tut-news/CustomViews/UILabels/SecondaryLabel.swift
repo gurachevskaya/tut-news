@@ -21,17 +21,35 @@ class SecondaryLabel: UILabel {
     }
     
     
-    convenience init(fontSize: CGFloat) {
+    convenience init(textAlignment: NSTextAlignment, fontSize: CGFloat) {
         self.init(frame: .zero)
+        self.textAlignment = textAlignment
         font = UIFont.systemFont(ofSize: fontSize, weight: .medium)
     }
     
     
     private func configure() {
-        textColor                   = .secondaryLabel
+        textColor                   = .systemGray2
         adjustsFontSizeToFitWidth   = true
-        minimumScaleFactor          = 0.9
+        numberOfLines               = 0
+        minimumScaleFactor          = 0.75
         lineBreakMode               = .byTruncatingTail
         translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    
+    func addInterlineSpacing(spacingValue: CGFloat = 5) {
+        guard let textString = text else { return }
+        
+        let attributedString = NSMutableAttributedString(string: textString)
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = spacingValue
+        
+        attributedString.addAttribute(
+            .paragraphStyle,
+            value: paragraphStyle,
+            range: NSRange(location: 0, length: attributedString.length
+        ))
+        attributedText = attributedString
     }
 }

@@ -44,11 +44,16 @@ class NewsCell: UICollectionViewCell {
         addSubviews(newsImageView, authorLabel, dateLabel, titleLabel, descriptionLabel)
         let padding: CGFloat = 8
         
+        let imageViewHeightConstraint: CGFloat = DeviceTypes.isiPhoneSE || DeviceTypes.isiPhone8Zoomed ? 250 : 400
+        if DeviceTypes.isiPhoneSE || DeviceTypes.isiPhone8Zoomed {
+            titleLabel.numberOfLines = 2
+        }
+        
         NSLayoutConstraint.activate([
             newsImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
             newsImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: padding),
             newsImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -padding),
-            newsImageView.heightAnchor.constraint(equalToConstant: 400),
+            newsImageView.heightAnchor.constraint(equalToConstant: imageViewHeightConstraint),
             
             authorLabel.topAnchor.constraint(equalTo: newsImageView.bottomAnchor, constant: padding),
             authorLabel.leadingAnchor.constraint(equalTo: newsImageView.leadingAnchor, constant: padding),

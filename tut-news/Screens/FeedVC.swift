@@ -17,24 +17,13 @@ class FeedVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemGray5
+        view.backgroundColor = Colors.primary
+        
+        presentAlertOnMainThread(title: "error", message: "here a message", buttonTitle: "Ok")
         
         configureControl()
-        
-        NetworkManager.shared.getNews { result in
-            switch result {
-            case .success(let news):
-                self.news = news
-                DispatchQueue.main.async {
-                    self.collectionView.reloadData()
-                }
-                
-            case .failure(let error):
-                print(error)
-            }
-        }
-        
         configureCollectionView()
+        getNews()
     }
     
     
@@ -56,15 +45,30 @@ class FeedVC: UIViewController {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.backgroundColor = .systemGray5
+        collectionView.backgroundColor = Colors.primary
         collectionView.register(NewsCell.self, forCellWithReuseIdentifier: NewsCell.reuseID)
         
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: control.bottomAnchor, constant: 10),
+            collectionView.topAnchor.constraint(equalTo: control.bottomAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+    }
+    
+    
+    func getNews() {
+        NetworkManager.shared.getNews { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let news):
+                self.news = news
+                self.collectionView.reloadDataOnMainThread()
+            case .failure(let error):
+                self.presentAlertOnMainThread(title: "Something went wrong", message: error.rawValue, buttonTitle: "Ok")
+            }
+        }
     }
 }
 
@@ -98,14 +102,12 @@ extension FeedVC: UICollectionViewDelegate {
     //    }
     //
     //
-    //    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    //        let activeArray = isSearching ? filteredFollowers : followers
-    //        let follower    = activeArray[indexPath.item]
-    //
-    //        let destVC      = UserInfoVC()
-    //        destVC.delegate = self
-    //        destVC.username = follower.login
-    //        let navVC       = UINavigationController(rootViewController: destVC)
-    //        present(navVC, animated: true)
-    //    }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let currentNews        = news[indexPath.item]
+        
+        let destVC      = NewsInfoViewController()
+        destVC.news = currentNews
+        let navVC       = UINavigationController(rootViewController: destVC)
+        present(navVC, animated: true)
+    }
 }

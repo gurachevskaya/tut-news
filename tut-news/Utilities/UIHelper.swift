@@ -18,8 +18,8 @@ enum UIHelper {
         let itemWidth                   = availableWidth
         
         let flowLayout                  = UICollectionViewFlowLayout()
-        flowLayout.sectionInset         = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)
-        flowLayout.itemSize             = CGSize(width: itemWidth, height: 500)
+        flowLayout.sectionInset         = UIEdgeInsets(top: padding, left: 0, bottom: padding, right: padding)
+        flowLayout.itemSize             = CGSize(width: itemWidth, height: view.bounds.height - 44)
         flowLayout.scrollDirection      = .horizontal
         
         return flowLayout
