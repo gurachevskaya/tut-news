@@ -21,6 +21,7 @@ class NewsInfoViewController: UIViewController {
     
     let shareButton         = UIButton()
     let saveButton          = UIButton()
+    var buttons: [UIButton] = []
     
     var news: News!
     
@@ -29,6 +30,7 @@ class NewsInfoViewController: UIViewController {
         
         configureViewController()
         configureScrollView()
+        configureButtons()
         set(news: news)
     }
     
@@ -60,6 +62,33 @@ class NewsInfoViewController: UIViewController {
     }
     
     
+    func configureButtons() {
+        buttons = [saveButton, shareButton]
+        
+        for button in buttons {
+            newsImageView.addSubview(button)
+            button.translatesAutoresizingMaskIntoConstraints = false
+            button.tintColor = .white
+        }
+        
+        saveButton.setImage(SFSymbols.save, for: .normal)
+        shareButton.setImage(SFSymbols.share, for: .normal)
+        
+        saveButton.addTarget(self, action: #selector(didTapSaveButton), for: .touchUpInside)
+        shareButton.addTarget(self, action: #selector(didTapShareButton), for: .touchUpInside)
+    }
+
+    
+    @objc func didTapSaveButton() {
+         print("didTapSaveButton")
+    }
+    
+    
+    @objc func didTapShareButton() {
+           print("didTapShareButton")
+       }
+       
+    
     func set(news: News) {
            newsImageView.downloadImage(fromURL: news.newsUrl)
            newsImageView.contentMode = .scaleAspectFill
@@ -87,6 +116,16 @@ class NewsInfoViewController: UIViewController {
             newsImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             newsImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             newsImageView.heightAnchor.constraint(equalTo: newsImageView.widthAnchor, multiplier: ratio),
+            
+            shareButton.trailingAnchor.constraint(equalTo: newsImageView.trailingAnchor, constant: -padding),
+            shareButton.bottomAnchor.constraint(equalTo: newsImageView.bottomAnchor, constant: -padding),
+            shareButton.heightAnchor.constraint(equalToConstant: 50),
+            shareButton.heightAnchor.constraint(equalToConstant: 50),
+            
+            saveButton.trailingAnchor.constraint(equalTo: shareButton.leadingAnchor, constant: -padding),
+            saveButton.heightAnchor.constraint(equalToConstant: 50),
+            saveButton.widthAnchor.constraint(equalToConstant: 50),
+            saveButton.bottomAnchor.constraint(equalTo: shareButton.bottomAnchor),
             
             authorLabel.topAnchor.constraint(equalTo: newsImageView.bottomAnchor, constant: padding),
             authorLabel.leadingAnchor.constraint(equalTo: newsImageView.leadingAnchor, constant: padding),
