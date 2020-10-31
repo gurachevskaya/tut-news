@@ -9,6 +9,12 @@
 import UIKit
 import CoreLocation
 
+extension CLLocation {
+    func fetchCityAndCountry(completion: @escaping (_ city: String?, _ country:  String?, _ error: Error?) -> ()) {
+        CLGeocoder().reverseGeocodeLocation(self) { completion($0?.first?.locality, $0?.first?.country, $1) }
+    }
+}
+
 class FeedVC: DataLoadingVC {
     
     let control = CustomSegmentedControl(frame: .zero, buttonTypes: [.all, .saved])
@@ -16,7 +22,7 @@ class FeedVC: DataLoadingVC {
     var news: [News]    = []
     
     var locationManager: CLLocationManager?
-    
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,14 +30,15 @@ class FeedVC: DataLoadingVC {
         configureLocationManager()
         configureControl()
         configureCollectionView()
-        getNews()
     }
     
     
     private func configureLocationManager() {
         locationManager = CLLocationManager()
         locationManager?.delegate = self
+        locationManager?.requestWhenInUseAuthorization()
         locationManager?.requestAlwaysAuthorization()
+        locationManager?.startMonitoringSignificantLocationChanges()
     }
     
     
@@ -66,6 +73,8 @@ class FeedVC: DataLoadingVC {
     
     
     private func getNews() {
+//        guard locationManager?.location else { return }
+        
         NetworkManager.shared.getNews { [weak self] result in
             guard let self = self else { return }
             
@@ -173,12 +182,13 @@ extension FeedVC: NewsInfoViewControllerDelegate {
 extension FeedVC: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        if status == .authorizedAlways {
-            if CLLocationManager.isMonitoringAvailable(for: CLBeaconRegion.self) {
-                if CLLocationManager.isRangingAvailable() {
-                    // do stuff
-                }
-            }
+        if status == .authorizedAlways || status == .authorizedWhenInUse {
+            manager.location?.fetchCityAndCountry(completion: { (city, country, error) in
+                print(city)
+                print(country)
+                print(error)
+            })
+//            getNews()
         } else if status == .denied || status == .restricted {
             presentLocationAlertOnMainThread()
         }
