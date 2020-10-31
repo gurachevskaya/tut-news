@@ -26,7 +26,7 @@ extension UIViewController {
     
     func presentLocationAlertOnMainThread() {
         DispatchQueue.main.async {
-            let alertVC = UIAlertController(title: "😢", message: "We need to know your location. Go to Settings > Privacy > Location Services and change privacy settings for this app.", preferredStyle: .alert)
+            let alertVC = UIAlertController(title: "Something went wrong.", message: "Please check your internet connection or location settings for the app in Settings > Privacy > Location Services", preferredStyle: .alert)
             
             let okAction = UIAlertAction(title: "Ok", style: UIAlertAction.Style.default)
             alertVC.addAction(okAction)

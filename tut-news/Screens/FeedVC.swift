@@ -71,6 +71,7 @@ class FeedVC: UIViewController {
         guard authorizationStatus == .authorizedAlways || authorizationStatus == .authorizedWhenInUse else {
             news = []
             collectionView.reloadDataOnMainThread()
+            presentLocationAlertOnMainThread()
             return
         }
         locationManager?.location?.fetchCountry(completion: { (country, error) in
@@ -80,6 +81,7 @@ class FeedVC: UIViewController {
                     
                     switch result {
                     case .success(let news):
+                        
                         if self.news != news {
                             self.news = news
                             self.collectionView.reloadDataOnMainThread()
