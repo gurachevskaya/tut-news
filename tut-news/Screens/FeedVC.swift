@@ -93,7 +93,7 @@ class FeedVC: UIViewController {
             } else {
                 self.news = []
                 self.collectionView.reloadDataOnMainThread()
-                self.presentAlertOnMainThread(title: "😢", message: "Only people from Belarus can see the news.", buttonTitle: "Ok")
+                self.presentAlertOnMainThread(title: "Something went wrong.", message: "Only people from Belarus can see the news. If you are in Belarus, check your internet connection.", buttonTitle: "Ok")
             }
         })
     }
