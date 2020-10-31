@@ -9,12 +9,6 @@
 import UIKit
 import CoreLocation
 
-extension CLLocation {
-    func fetchCityAndCountry(completion: @escaping (_ city: String?, _ country:  String?, _ error: Error?) -> ()) {
-        CLGeocoder().reverseGeocodeLocation(self) { completion($0?.first?.locality, $0?.first?.country, $1) }
-    }
-}
-
 class FeedVC: DataLoadingVC {
     
     let control = CustomSegmentedControl(frame: .zero, buttonTypes: [.all, .saved])
@@ -22,6 +16,7 @@ class FeedVC: DataLoadingVC {
     var news: [News]    = []
     
     var locationManager: CLLocationManager?
+    var authorizationStatus: CLAuthorizationStatus?
 
     
     override func viewDidLoad() {
@@ -30,6 +25,7 @@ class FeedVC: DataLoadingVC {
         configureLocationManager()
         configureControl()
         configureCollectionView()
+        
     }
     
     
@@ -73,21 +69,32 @@ class FeedVC: DataLoadingVC {
     
     
     private func getNews() {
-//        guard locationManager?.location else { return }
-        
-        NetworkManager.shared.getNews { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let news):
-                if self.news != news {
-                    self.news = news
-                    self.collectionView.reloadDataOnMainThread()
-                }
-            case .failure(let error):
-                self.presentAlertOnMainThread(title: "Something went wrong", message: error.rawValue, buttonTitle: "Ok")
-            }
+        guard authorizationStatus == .authorizedAlways || authorizationStatus == .authorizedWhenInUse else {
+            news = []
+            collectionView.reloadDataOnMainThread()
+            return
         }
+        locationManager?.location?.fetchCountry(completion: { (country, error) in
+            if country == "Belarus" {
+                NetworkManager.shared.getNews { [weak self] result in
+                    guard let self = self else { return }
+                    
+                    switch result {
+                    case .success(let news):
+                        if self.news != news {
+                            self.news = news
+                            self.collectionView.reloadDataOnMainThread()
+                        }
+                    case .failure(let error):
+                        self.presentAlertOnMainThread(title: "Something went wrong", message: error.rawValue, buttonTitle: "Ok")
+                    }
+                }
+            } else {
+                self.news = []
+                self.collectionView.reloadDataOnMainThread()
+                self.presentAlertOnMainThread(title: "😢", message: "Only people from Belarus can see the news.", buttonTitle: "Ok")
+            }
+        })
     }
     
     
@@ -98,24 +105,12 @@ class FeedVC: DataLoadingVC {
             case .success(let favourites):
                 self.news = favourites
                 self.collectionView.reloadDataOnMainThread()
-//                self.updateUI(with: favourites)
                 
             case .failure(let error):
                 self.presentAlertOnMainThread(title: "Something went wrong", message: error.rawValue, buttonTitle: "Ok")
             }
         }
     }
-
-//    private func updateUI(with favourites: [News]) {
-//        self.news = favourites
-//        DispatchQueue.main.async {
-//            self.collectionView.reloadData()
-//            self.view.bringSubviewToFront(self.collectionView)
-//        }
-//        if favourites.isEmpty {
-//            showEmptyStateView(with: "No favourites\nChoose one on the all screen.", in: collectionView)
-//        }
-//    }
 }
 
 
@@ -150,7 +145,7 @@ extension FeedVC: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let currentNews = news[indexPath.item]
-        let destVC      = NewsInfoViewController()
+        let destVC      = NewsInfoVC()
         destVC.delegate = self
         destVC.news     = currentNews
         let navVC       = UINavigationController(rootViewController: destVC)
@@ -172,7 +167,7 @@ extension FeedVC: CustomSegmentedControlDelegate {
 }
 
 
-extension FeedVC: NewsInfoViewControllerDelegate {
+extension FeedVC: NewsInfoVCDelegate {
     func reloadView() {
         getFavNews()
     }
@@ -182,13 +177,9 @@ extension FeedVC: NewsInfoViewControllerDelegate {
 extension FeedVC: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        authorizationStatus = status
         if status == .authorizedAlways || status == .authorizedWhenInUse {
-            manager.location?.fetchCityAndCountry(completion: { (city, country, error) in
-                print(city)
-                print(country)
-                print(error)
-            })
-//            getNews()
+            self.getNews()
         } else if status == .denied || status == .restricted {
             presentLocationAlertOnMainThread()
         }

@@ -1,5 +1,5 @@
 //
-//  NewsInfoViewController.swift
+//  NewsInfoVC.swift
 //  tut-news
 //
 //  Created by Karina on 10/30/20.
@@ -8,13 +8,13 @@
 
 import UIKit
 
-protocol NewsInfoViewControllerDelegate: class {
+protocol NewsInfoVCDelegate: class {
     func reloadView()
 }
 
-class NewsInfoViewController: UIViewController {
+class NewsInfoVC: UIViewController {
     
-    weak var delegate: NewsInfoViewControllerDelegate?
+    weak var delegate: NewsInfoVCDelegate?
     
     let scrollView          = UIScrollView()
     let contentView         = UIView()
