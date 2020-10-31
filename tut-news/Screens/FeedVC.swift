@@ -9,7 +9,7 @@
 import UIKit
 import CoreLocation
 
-class FeedVC: DataLoadingVC {
+class FeedVC: UIViewController {
     
     let control = CustomSegmentedControl(frame: .zero, buttonTypes: [.all, .saved])
     var collectionView: UICollectionView!
@@ -25,7 +25,6 @@ class FeedVC: DataLoadingVC {
         configureLocationManager()
         configureControl()
         configureCollectionView()
-        
     }
     
     
