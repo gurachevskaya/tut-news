@@ -32,8 +32,6 @@
 		9A9380BA254AE65100A6459D /* tut_newsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A9380B9254AE65100A6459D /* tut_newsTests.swift */; };
 		9A9380C9254AE83C00A6459D /* FeedVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A9380C7254AE83C00A6459D /* FeedVC.swift */; };
 		9A9380CF254AF58900A6459D /* CustomSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A9380CE254AF58900A6459D /* CustomSegmentedControl.swift */; };
-		9ACB968F254C828600E68487 /* DataLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ACB968E254C828600E68487 /* DataLoadingView.swift */; };
-		9ACB9692254C82C600E68487 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ACB9691254C82C600E68487 /* EmptyStateView.swift */; };
 		9ACB9694254D4C0300E68487 /* CLLocation+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ACB9693254D4C0300E68487 /* CLLocation+Ext.swift */; };
 /* End PBXBuildFile section */
 
@@ -77,8 +75,6 @@
 		9A9380BB254AE65100A6459D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9A9380C7254AE83C00A6459D /* FeedVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedVC.swift; sourceTree = "<group>"; };
 		9A9380CE254AF58900A6459D /* CustomSegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSegmentedControl.swift; sourceTree = "<group>"; };
-		9ACB968E254C828600E68487 /* DataLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataLoadingView.swift; sourceTree = "<group>"; };
-		9ACB9691254C82C600E68487 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		9ACB9693254D4C0300E68487 /* CLLocation+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Ext.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -232,8 +228,6 @@
 		9A9380CB254AEC0200A6459D /* CustomViews */ = {
 			isa = PBXGroup;
 			children = (
-				9ACB9690254C82BB00E68487 /* Views */,
-				9ACB968D254C826E00E68487 /* ViewControllers */,
 				9A57EC47254B5F5E00DCE3EF /* UILabels */,
 				9A2509B8254B16190006ED97 /* ImageViews */,
 				9A9380CD254AF53A00A6459D /* Controls */,
@@ -256,22 +250,6 @@
 				9A9380CE254AF58900A6459D /* CustomSegmentedControl.swift */,
 			);
 			path = Controls;
-			sourceTree = "<group>";
-		};
-		9ACB968D254C826E00E68487 /* ViewControllers */ = {
-			isa = PBXGroup;
-			children = (
-				9ACB968E254C828600E68487 /* DataLoadingView.swift */,
-			);
-			path = ViewControllers;
-			sourceTree = "<group>";
-		};
-		9ACB9690254C82BB00E68487 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				9ACB9691254C82C600E68487 /* EmptyStateView.swift */,
-			);
-			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -390,8 +368,6 @@
 				9A2509B7254B15A30006ED97 /* NewsCell.swift in Sources */,
 				9A2509BA254B16310006ED97 /* NewsImageView.swift in Sources */,
 				9A519ED2254C1AFB0022C517 /* String+Ext.swift in Sources */,
-				9ACB968F254C828600E68487 /* DataLoadingView.swift in Sources */,
-				9ACB9692254C82C600E68487 /* EmptyStateView.swift in Sources */,
 				9A2509C8254B1E3C0006ED97 /* AppError.swift in Sources */,
 				9A9380CF254AF58900A6459D /* CustomSegmentedControl.swift in Sources */,
 				9A519EE4254C77870022C517 /* PersistenseManager.swift in Sources */,
@@ -553,6 +529,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 84DXJF9WZG;
 				INFOPLIST_FILE = "tut-news/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -571,6 +548,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 84DXJF9WZG;
 				INFOPLIST_FILE = "tut-news/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
