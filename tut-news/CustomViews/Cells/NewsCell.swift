@@ -45,7 +45,7 @@ class NewsCell: UICollectionViewCell {
         let padding: CGFloat = 8
         
         let imageViewHeightConstraint: CGFloat = DeviceTypes.isiPhoneSE || DeviceTypes.isiPhone8Zoomed ? 250 : 400
-        if DeviceTypes.isiPhoneSE || DeviceTypes.isiPhone8Zoomed {
+        if DeviceTypes.isiPhoneSE || DeviceTypes.isiPhone8Zoomed || DeviceTypes.isiPhone8Standard {
             titleLabel.numberOfLines = 2
         }
         
@@ -72,7 +72,7 @@ class NewsCell: UICollectionViewCell {
             descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: padding),
             descriptionLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor, constant: padding),
             descriptionLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: -padding),
-            descriptionLabel.bottomAnchor.constraint(lessThanOrEqualTo: safeAreaLayoutGuide.bottomAnchor, constant: -padding)
+            descriptionLabel.bottomAnchor.constraint(lessThanOrEqualTo: safeAreaLayoutGuide.bottomAnchor, constant: -15)
         ])
     }
 }
