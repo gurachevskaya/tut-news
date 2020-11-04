@@ -186,6 +186,7 @@ extension FeedVC: CLLocationManagerDelegate {
         if status == .authorizedAlways || status == .authorizedWhenInUse {
             self.getNews()
         } else if status == .denied || status == .restricted {
+            setEmptyCollectionView()
             presentLocationAlertOnMainThread()
         }
     }
