@@ -69,16 +69,15 @@ class FeedVC: UIViewController {
     
     private func getNews() {
         guard authorizationStatus == .authorizedAlways || authorizationStatus == .authorizedWhenInUse else {
-            news = []
-            collectionView.reloadDataOnMainThread()
+            setEmptyCollectionView()
             presentLocationAlertOnMainThread()
             return
         }
-        locationManager?.location?.fetchCountry(completion: { (country, error) in
-            if country == "Belarus" {
-                NetworkManager.shared.getNews { [weak self] result in
-                    guard let self = self else { return }
-                    
+        locationManager?.location?.fetchCountry(completion: { [weak self] (country, error) in
+            guard let self = self else { return }
+            
+            if country == "Belarus" || country == "Беларусь" {
+                NetworkManager.shared.getNews { result in
                     switch result {
                     case .success(let news):
                         
@@ -91,11 +90,16 @@ class FeedVC: UIViewController {
                     }
                 }
             } else {
-                self.news = []
-                self.collectionView.reloadDataOnMainThread()
+                self.setEmptyCollectionView()
                 self.presentAlertOnMainThread(title: "Something went wrong.", message: "Only people from Belarus can see the news. If you are in Belarus, check your internet connection.", buttonTitle: "Ok")
             }
         })
+    }
+    
+    
+    private func setEmptyCollectionView() {
+        news = []
+        collectionView.reloadDataOnMainThread()
     }
     
     
